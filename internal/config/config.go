@@ -9,7 +9,7 @@ import (
 )
 
 type HttpServer struct {
-	Addr string `yaml:"addr" env:"Addr"`
+	Addr string `yaml:"address" env:"Addr"`
 }
 
 type Config struct {
