@@ -47,7 +47,7 @@ Prerequisites
 ## Installation
 1- Clone the repository:
 ```bash
-git clone https://github.com/your-username/todo-app-in-golang.git
+git clone https://github.com/suryanshvermaa/todo-app-in-golang.git
 cd todo-app-in-golang
 ```
 2- Install dependencies:
