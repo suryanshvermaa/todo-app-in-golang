@@ -6,6 +6,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/suryanshvermaa/todo-app-in-golang/internal/storage"
@@ -40,7 +41,17 @@ func New(storage storage.Storage) http.HandlerFunc {
 
 func GetTodo(storage storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id := r.PathValue("id")
-
+		id, err := strconv.Atoi(r.PathValue("id"))
+		if err != nil {
+			response.JsonResponse(w, 400, err.Error(), nil)
+			return
+		}
+		todo, err := storage.GetTodoById(id)
+		if err != nil {
+			slog.Error("error getting todo", "error", err.Error())
+			response.JsonResponse(w, http.StatusInternalServerError, err.Error(), nil)
+			return
+		}
+		response.JsonResponse(w, http.StatusOK, "todo retrieved successfully", todo)
 	}
 }
