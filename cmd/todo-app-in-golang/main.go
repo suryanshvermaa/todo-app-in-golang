@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"log/slog"
@@ -12,6 +13,7 @@ import (
 	"time"
 
 	"github.com/suryanshvermaa/todo-app-in-golang/internal/config"
+	"github.com/suryanshvermaa/todo-app-in-golang/internal/http/handlers/todo"
 )
 
 func main() {
@@ -21,8 +23,10 @@ func main() {
 	// setup router
 	router := http.NewServeMux()
 	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome to the Todo App!"))
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]string{"sucess": "true", "message": "healthy"})
 	})
+	router.HandleFunc("POST /api/createTodo", todo.New())
 	// setup server
 	server := http.Server{
 		Addr:    cfg.Addr,
