@@ -40,6 +40,7 @@ func New(storage storage.Storage) http.HandlerFunc {
 
 func GetTodo(storage storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
 
 	}
 }
