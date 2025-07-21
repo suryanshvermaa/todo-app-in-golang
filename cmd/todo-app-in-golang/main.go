@@ -31,6 +31,8 @@ func main() {
 	router.HandleFunc("POST /api/createTodo", todo.New(db))
 	router.HandleFunc("GET /api/getTodo/{id}", todo.GetTodo(db))
 	router.HandleFunc("GET /api/getAllTodos", todo.GetAllTodos(db))
+	router.HandleFunc("DELETE /api/deleteTodo/{id}", todo.DeleteTodo(db))
+	router.HandleFunc("PUT /api/updateTodo/{id}", todo.UpdateTodo(db))
 	// setup server
 	server := http.Server{
 		Addr:    cfg.Addr,
