@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/suryanshvermaa/todo-app-in-golang/internal/types"
 
 	"github.com/suryanshvermaa/todo-app-in-golang/internal/utils/response"
@@ -25,7 +26,12 @@ func New() http.HandlerFunc {
 			response.JsonResponse(w, 400, err.Error(), nil)
 			return
 		}
-		todo.Id = 1
+		if err := validator.New().Struct(todo); err != nil {
+			validateErrs := err.(validator.ValidationErrors)
+			response.JsonResponse(w, 400, validateErrs.Error(), nil)
+			return
+		}
+		todo.ID = 1
 		slog.Info("creating todo")
 		response.JsonResponse(w, http.StatusCreated, "todo created successfully", todo)
 	}
