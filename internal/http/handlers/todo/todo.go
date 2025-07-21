@@ -8,16 +8,17 @@ import (
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/suryanshvermaa/todo-app-in-golang/internal/storage"
 	"github.com/suryanshvermaa/todo-app-in-golang/internal/types"
 
 	"github.com/suryanshvermaa/todo-app-in-golang/internal/utils/response"
 )
 
-func New() http.HandlerFunc {
+func New(storage storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		var todo types.Todo
-		err := json.NewDecoder(r.Body).Decode(&todo)
+		var newTodo types.Todo
+		err := json.NewDecoder(r.Body).Decode(&newTodo)
 		if errors.Is(err, io.EOF) {
 			response.JsonResponse(w, 400, "empty body", nil)
 			return
@@ -26,13 +27,19 @@ func New() http.HandlerFunc {
 			response.JsonResponse(w, 400, err.Error(), nil)
 			return
 		}
-		if err := validator.New().Struct(todo); err != nil {
+		if err := validator.New().Struct(newTodo); err != nil {
 			validateErrs := err.(validator.ValidationErrors)
 			response.JsonResponse(w, 400, validateErrs.Error(), nil)
 			return
 		}
-		todo.ID = 1
+		newTodo, _ = storage.CreateTodo(newTodo.Todo, newTodo.Completed)
 		slog.Info("creating todo")
-		response.JsonResponse(w, http.StatusCreated, "todo created successfully", todo)
+		response.JsonResponse(w, http.StatusCreated, "todo created successfully", newTodo)
+	}
+}
+
+func GetTodo(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
 	}
 }
